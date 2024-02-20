@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/user/Laba_1/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  -std=c++17 -g -o CMakeFiles\\main.dir\\Laba_1.cpp.obj -c C:\\Users\\user\\Laba_1\\Laba_1.cpp",
+  "file": "C:\\Users\\user\\Laba_1\\Laba_1.cpp",
+  "output": "CMakeFiles\\main.dir\\Laba_1.cpp.obj"
+}
+]
