@@ -46,6 +46,7 @@ void Info(double** A, double* b, double N){
         }
         cout << " = " << b[i] << endl;   
     }
+    cout << "--------------------------" << endl;
 }
 
 int main(){
@@ -58,51 +59,61 @@ int main(){
     }
     double** A = new double*[N];
     double* b = new double[N];
+    
+    double** A_copy = new double*[N];
+    double* b_copy = new double[N];
+
 
     for (int i = 0; i < N; i++){
         A[i] = new double[N];
     }
+
+    for (int i = 0; i < N; i++){
+        A_copy[i] = new double[N];
+    }
+
+
     for (int i = 0; i < N; i ++){
         for (int j = 0; j < N; j ++){
             A[i][j] = 1 + dist(gen) % 20;
         }
         b[i] = dist(gen) % 100;
     }
+
+    for (int i = 0; i < N; i ++){
+        for (int j = 0; j < N; j ++){
+            A_copy[i][j] = A[i][j];
+        }
+        b_copy[i] = b[i];
+    }
+
     cout << N << endl;
     Info(A, b, N);
-    double** B = new double* [N];
-    for (int j = 0; j < N; j++){
-        B[j] = new double[N];
-        for (int k = 0; k < N; k++)
-            B[j][k] = A[j][k];
-    }
+    
     for (int i = 0; i < N; i ++){
         double GlEl = 0;
         GlEl = A[i][i];
         bool fl = true;
         if (GlEl == 0){
-        fl = zamen(A, b, N, i);
+            fl = zamen(A, b, N, i);
             if (!fl){
                 cout << "Eror";
                 return 0;
             }
-            cout << "--------------------------" << endl;
+            
             Info(A, b, N);
-            cout << "--------------------------" << endl;
         }
         for (int j = i; j < N; j ++){
             A[i][j] = A[i][j] / GlEl;
         }
         b[i] = b[i] / GlEl;
 
-        cout << "--------------------------" << endl;
         del(A, b, N, i);
         Info(A, b, N);
-        cout << "--------------------------" << endl;
     }
 
     double* korni = new double [N];
-    for (int j = N; j > 0; j--){
+    for (int j = N - 1; j >= 0; j--){
         korni[j] = b[j];
         for (int k = j + 1; k < N; k++){
             korni[j] = korni[j] - korni[k] * A[j][k];
@@ -112,13 +123,24 @@ int main(){
         cout << "x" << j + 1 << " = " << korni[j] << endl;
     }
     cout << "Матрица погрешности" << endl;
-    Info(B, b, N);
-
+    double* mass_pog = new double [N];
+    
+    for (int j1 = 0; j1 < N; j1++){
+        mass_pog[j1] = 0;
+        for (int j2 = 0; j2 < N; j2 ++){
+            mass_pog[j1] += korni[j2] * A_copy[j1][j2];
+        }
+        mass_pog[j1] = b_copy[j1] - mass_pog[j1];
+    }
+    for (int j3 = 0; j3 < N; j3++){
+        cout << mass_pog[j3] << endl;
+    }
 
     for (int i = 0; i < N; i++){
         delete [] A[i];
     }
     delete [] b;
-
+    delete [] korni;    
+    delete [] mass_pog;
     return 0;
 }
