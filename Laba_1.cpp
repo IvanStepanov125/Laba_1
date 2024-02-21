@@ -53,9 +53,24 @@ int main(){
     mt19937 gen;
     gen.seed(random_device()());
     uniform_int_distribution<mt19937::result_type> dist;
+    cout << "Введите 1, если хоьтите заполнить матризу рандомом" << endl;
+    cout << "Введите 2, если хоьтите заполнить матризу самостоятельно" << endl;
+    int fl2;
+    cin >> fl2;
+    if ((fl2 != 1) and (fl2 != 2)){
+        cout << "Eror" << endl;
+        return 0;
+    }
     int N = 0;
-    while (N < 2){
-        N = dist(gen) % 7;
+    if (fl2 == 1){
+        while (N < 2){
+            N = dist(gen) % 7;
+        }
+    }
+
+    if (fl2 ==2){
+        cout << "Введите размер матрицы" << endl;
+        cin >> N;
     }
     double** A = new double*[N];
     double* b = new double[N];
@@ -72,12 +87,24 @@ int main(){
         A_copy[i] = new double[N];
     }
 
-
-    for (int i = 0; i < N; i ++){
-        for (int j = 0; j < N; j ++){
-            A[i][j] = 1 + dist(gen) % 20;
+    if (fl2 == 1){
+        for (int i = 0; i < N; i ++){
+            for (int j = 0; j < N; j ++){
+                A[i][j] = 1 + dist(gen) % 20;
+            }
+            b[i] = dist(gen) % 100;
         }
-        b[i] = dist(gen) % 100;
+    }
+
+    if (fl2 == 2){
+        for (int i = 0; i < N; i ++){
+            for (int j = 0; j < N; j ++){
+                cout << "Введите a"<<i+1<<j+1<< endl;
+                cin >> A[i][j];
+            }
+            cout << "Введите в"<<i+1<< endl;
+            cin >> b[i];
+        }
     }
 
     for (int i = 0; i < N; i ++){
@@ -111,7 +138,7 @@ int main(){
         del(A, b, N, i);
         Info(A, b, N);
     }
-
+    cout << "Корни" << endl;
     double* korni = new double [N];
     for (int j = N - 1; j >= 0; j--){
         korni[j] = b[j];
@@ -138,8 +165,12 @@ int main(){
 
     for (int i = 0; i < N; i++){
         delete [] A[i];
+        delete [] A_copy[i];
     }
+    delete [] A;
+    delete [] A_copy;
     delete [] b;
+    delete [] b_copy;
     delete [] korni;    
     delete [] mass_pog;
     return 0;
