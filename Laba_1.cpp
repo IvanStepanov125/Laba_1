@@ -6,23 +6,18 @@ using namespace std;
 
 bool zamen(double** A, double* b, double N, int i){
     int y;
-    bool flag = true;
     for (int j = i; j < N; j++){
         if(A[i][j] != 0){
-            y = j;
             for(int k = 0; k < N; k++){
                 int c;
-                c = A[j][i];
-                A[j][i] = A[j][y];
-                A[j][y] = c;
+                c = A[k][i];
+                A[k][i] = A[k][j];
+                A[k][j] = c;
             }
-            bool flag = true;
-            break;
-        }
-        else
-            flag = false; 
+            return true;
+        } 
     }
-    return flag;
+    return false;
 }
 
 void del(double** A, double* b, double N, int i){
@@ -53,8 +48,8 @@ int main(){
     mt19937 gen;
     gen.seed(random_device()());
     uniform_int_distribution<mt19937::result_type> dist;
-    cout << "Введите 1, если хоьтите заполнить матризу рандомом" << endl;
-    cout << "Введите 2, если хоьтите заполнить матризу самостоятельно" << endl;
+    cout << "Введите 1, если хотите заполнить матризу рандомом" << endl;
+    cout << "Введите 2, если хотите заполнить матризу самостоятельно" << endl;
     int fl2;
     cin >> fl2;
     if ((fl2 != 1) and (fl2 != 2)){
@@ -64,7 +59,7 @@ int main(){
     int N = 0;
     if (fl2 == 1){
         while (N < 2){
-            N = dist(gen) % 7;
+            N = dist(gen) % 4;
         }
     }
 
@@ -90,7 +85,7 @@ int main(){
     if (fl2 == 1){
         for (int i = 0; i < N; i ++){
             for (int j = 0; j < N; j ++){
-                A[i][j] = 1 + dist(gen) % 20;
+                A[i][j] = 100000 + dist(gen) % 100000000;
             }
             b[i] = dist(gen) % 100;
         }
@@ -123,13 +118,14 @@ int main(){
         bool fl = true;
         if (GlEl == 0){
             fl = zamen(A, b, N, i);
-            if (!fl){
+            if (fl == false){
                 cout << "Eror";
                 return 0;
             }
             
             Info(A, b, N);
         }
+        GlEl = A[i][i];
         for (int j = i; j < N; j ++){
             A[i][j] = A[i][j] / GlEl;
         }
@@ -138,6 +134,7 @@ int main(){
         del(A, b, N, i);
         Info(A, b, N);
     }
+    
     cout << "Корни" << endl;
     double* korni = new double [N];
     for (int j = N - 1; j >= 0; j--){
@@ -149,6 +146,15 @@ int main(){
     for (int j = 0; j < N; j++){
         cout << "x" << j + 1 << " = " << korni[j] << endl;
     }
+    double opred = 1;
+    if (N == 2){
+        opred = (A_copy[0][0] * A_copy[1][1]) - (A_copy[1][0] * A_copy[0][1]);
+    }
+    if (N == 3){
+        opred = (A_copy[0][0] * A_copy[1][1] * A_copy[2][2]) + (A_copy[0][1] * A_copy[1][2] * A_copy[2][0]) + (A_copy[1][0] * A_copy[2][1] * A_copy[0][2]) - (A_copy[0][2] * A_copy[1][1] * A_copy[2][0]) - (A_copy[0][1] * A_copy[1][0] * A_copy[2][2]) - (A_copy[0][0] * A_copy[1][2] * A_copy[2][1]);
+    }
+    cout << "Определитель матречы равен " << opred << endl;
+
     cout << "Матрица погрешности" << endl;
     double* mass_pog = new double [N];
     
